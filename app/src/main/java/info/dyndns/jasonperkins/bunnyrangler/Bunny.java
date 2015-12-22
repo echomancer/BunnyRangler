@@ -34,11 +34,36 @@ public class Bunny {
         else {
             cutenessTypeEnum = cutenessType.SOCUTEICOULDDIE;
         }
-
+        this.cuteValue = cutenessTypeEnum.ordinal(); // Let's actually set the cute value based on the enum - JTP 12/22/2015 2:17 pm
     }
 
     public static enum cutenessType {
         UGLY, CUTE, VERYCUTE, SOCUTEICOULDDIE;
+        // Adding length so we know when we've gone too far - JTP 12/22/2015 1:24 pm
+        public static int length = values().length-1;
+    }
+
+    // Function to make the bunny cuter - JTP 12/22/2015 1:54 pm
+    public void makeCuter() {
+        cuteValue++;
+        setEnumByValue();
+    }
+
+    // Function to make the bunny uglier - JTP 12/22/2015 1:54 pm
+    public void makeUglier() {
+        cuteValue--;
+        setEnumByValue();
+    }
+
+    // Function to set the enum based on the cutenessValue
+    public void setEnumByValue(){
+        if(cuteValue > cutenessType.length){    // Keep us from going too high
+            cuteValue = cutenessType.length;
+        }
+        if(cuteValue < 0){                      // Keep us from going too low
+            cuteValue = 0;
+        }
+        cutenessTypeEnum = cutenessType.values()[cuteValue];
     }
 
     public Enum<cutenessType> getCutenessTypeEnum() {
