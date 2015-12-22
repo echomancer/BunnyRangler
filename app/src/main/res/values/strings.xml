@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">BunnyRangler</string>
+    <string name="app_name">Bunny Rangler</string>
     <string name="add_bunny">Add Bunny</string>
     <string name="hint">enter bunny name here</string>
     <string name="action_settings">Settings</string>
     <string name="default_bunny_name">Bob</string>
     <string name="bunny_db_name">BunnyRangler.db</string>
+    <string name="test_bunny_name">Satan</string>
 </resources>

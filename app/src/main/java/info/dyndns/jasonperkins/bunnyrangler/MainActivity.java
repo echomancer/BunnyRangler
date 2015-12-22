@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         //init views
         etBunnyName = (EditText) findViewById(R.id.edit_text);
-        btnAdd = (Button) findViewById(R.id.button2);
+        btnAdd = (Button) findViewById(R.id.add_bunny);
         lvBunnies = (ListView) findViewById(R.id.listView);
 
         lvBunnies.setOnTouchListener(swipey); // Make sure we set a touch listener
