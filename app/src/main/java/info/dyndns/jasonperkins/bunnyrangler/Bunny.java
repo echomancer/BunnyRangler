@@ -40,7 +40,7 @@ public class Bunny {
     public static enum cutenessType {
         UGLY, CUTE, VERYCUTE, SOCUTEICOULDDIE;
         // Adding length so we know when we've gone too far - JTP 12/22/2015 1:24 pm
-        public static int length = values().length;
+        public static int length = values().length-1;
     }
 
     // Function to make the bunny cuter - JTP 12/22/2015 1:54 pm

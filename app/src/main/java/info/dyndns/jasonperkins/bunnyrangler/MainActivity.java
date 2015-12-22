@@ -3,6 +3,7 @@ package info.dyndns.jasonperkins.bunnyrangler;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> bunnyNameArray;
 
     final SwipeDetector swipey = new SwipeDetector();   // Get something to detect swipes - JTP 12/22/2015 1:34 pm
+    private static final String logTag = "Main Activity"; // Log tag for this activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         etBunnyName = (EditText) findViewById(R.id.edit_text);
         btnAdd = (Button) findViewById(R.id.button2);
         lvBunnies = (ListView) findViewById(R.id.listView);
+
+        lvBunnies.setOnTouchListener(swipey); // Make sure we set a touch listener
 
         // setup database
         PracticeDatabaseHelper dbHelper = new PracticeDatabaseHelper(this);
@@ -95,14 +99,35 @@ public class MainActivity extends AppCompatActivity {
         lvBunnies.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long l) {
-
-                Bunny b = bunnyArray.get(pos);
-                cupboard().withDatabase(db).delete(Bunny.class, b.get_id());
-                bunnyArray.remove(pos);
-                bunnyNameArray.remove(pos);
+                Bunny b = bunnyArray.get(pos);  // Let's get our bunny
+                SwipeDetector.Action act = swipey.getAction();
+                Log.i(logTag, "Item Clicker Long -- Swiped -- " + String.valueOf(act));
+                switch(act){
+                    case LR:
+                        b.makeCuter(); // Let's make him cuter
+                        break;
+                    case RL:
+                        b.makeUglier(); // Let's make him uglier
+                        break;
+                    case TB:
+                        break;
+                    case BT:
+                        break;
+                    case None:
+                        break;
+                }
+                // Now let's finish and update the view and the database
+                cupboard().withDatabase(db).put(b);
                 bunnyAdapter.notifyDataSetChanged();
 
-                return false;
+                if(act == SwipeDetector.Action.None){
+                    cupboard().withDatabase(db).delete(Bunny.class, b.get_id());
+                    bunnyArray.remove(pos);
+                    bunnyNameArray.remove(pos);
+                    bunnyAdapter.notifyDataSetChanged();
+                }
+
+               return false;
             }
         });
 
@@ -129,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
                 Bunny b = bunnyArray.get(pos);  // Let's get our bunny
                 SwipeDetector.Action act = swipey.getAction();
+                Log.i(logTag, "Item Clicker Short -- Swiped -- " + String.valueOf(act));
                 switch(act){
                     case LR:
                         b.makeCuter(); // Let's make him cuter
