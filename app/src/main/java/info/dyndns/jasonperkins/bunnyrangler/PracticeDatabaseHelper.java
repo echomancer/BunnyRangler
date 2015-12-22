@@ -38,11 +38,14 @@ public class PracticeDatabaseHelper extends SQLiteOpenHelper{
         cupboard().withDatabase(db).upgradeTables();
 
         // If version upgrading from version 1 to 2, lets initialize the furColor column to be orange
+        // Removing this line since it breaks the app - JTP 12/22/2015 11:48 am
+        /*
         if (newVersion == 2) {
             ContentValues cv = new ContentValues();
             cv.put("furColor", "black");
             cupboard().withDatabase(db).update(Bunny.class, cv);
         }
+        */
 
     }
 }
