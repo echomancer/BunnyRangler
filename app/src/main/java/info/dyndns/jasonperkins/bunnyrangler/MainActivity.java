@@ -3,6 +3,7 @@ package info.dyndns.jasonperkins.bunnyrangler;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> bunnyAdapter;
     ArrayList<Bunny> bunnyArray;
     ArrayList<String> bunnyNameArray;
+
+    final SwipeDetector swipey = new SwipeDetector();   // Get something to detect swipes - JTP 12/22/2015 1:34 pm
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //clicking on the bunny updates their cuteness value to VERYCUTE and persists that change
+        // Removing this version to add a swipe right left to set cuteness - JTP 12/22/2015 12:59 pm
+        /*
         lvBunnies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
@@ -112,6 +117,33 @@ public class MainActivity extends AppCompatActivity {
                 Bunny b = bunnyArray.get(pos);
                 b.setCuteValue(85);
                 b.setCutenessTypeEnum(Bunny.cutenessType.VERYCUTE);
+                cupboard().withDatabase(db).put(b);
+                bunnyAdapter.notifyDataSetChanged();
+            }
+        });
+        */
+
+
+        lvBunnies.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                Bunny b = bunnyArray.get(pos);  // Let's get our bunny
+                SwipeDetector.Action act = swipey.getAction();
+                switch(act){
+                    case LR:
+                        b.makeCuter(); // Let's make him cuter
+                        break;
+                    case RL:
+                        b.makeUglier(); // Let's make him uglier
+                        break;
+                    case TB:
+                        break;
+                    case BT:
+                        break;
+                    case None:
+                        break;
+                }
+                // Now let's finish and update the view and the database
                 cupboard().withDatabase(db).put(b);
                 bunnyAdapter.notifyDataSetChanged();
             }
