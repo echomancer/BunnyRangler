@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 
-                String txt1 = getResources().getString(R.string.bunny_display_text_part)+bunnyArray.get(position).getName();        // Moving concat to single lines
+                String txt1 = getResources().getString(R.string.bunny_display_text_part)+" "+bunnyArray.get(position).getName();        // Moving concat to single lines
                 String txt2 = "It is a "+bunnyArray.get(position).getCutenessTypeEnum()+" bunny";// JTP 12/22/2015 11:42 am
                 text1.setText(txt1);
                 text2.setText(txt2);
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch(id){
             case R.id.kill_bunnies:
-                cupboard().withDatabase(db).delete(Bunny.class,"_id != NULL");
+                cupboard().withDatabase(db).delete(Bunny.class,"name != ''");
                 bunnyArray.clear();
                 bunnyNameArray.clear();
                 bunnyAdapter.notifyDataSetChanged();

@@ -134,7 +134,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
         removeBunny(newBunny);
 
         // Make sure he's not there
-        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part) + newBunny))
+        onView(withText(getBunnyText(newBunny)))
                 .check(doesNotExist());
     }
 
@@ -147,11 +147,11 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
         removeBunny(newBunny);
 
         // Make sure he's visible
-        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part) + otherBunny))
+        onView(withText(getBunnyText(otherBunny)))
                 .check(matches(isDisplayed()));
 
         // Make sure he's not there
-        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part) + newBunny))
+        onView(withText(getBunnyText(newBunny)))
                 .check(doesNotExist());
 
         removeBunny(otherBunny);
@@ -174,7 +174,11 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
 
     // Function to remove a bunny via espresso
     public void removeBunny(String bun){
-        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part)+ bun))
+        onView(withText(getBunnyText(bun)))
                 .perform(longClick());
+    }
+
+    public String getBunnyText(String bun){
+        return mActivity.getResources().getString(R.string.bunny_display_text_part)+" "+ bun;
     }
 }
