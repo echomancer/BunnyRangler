@@ -1,10 +1,14 @@
 package info.dyndns.jasonperkins.bunnyrangler;
 
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,6 +22,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import db.PracticeDatabaseHelper;
+import models.Bunny;
 import nl.qbusict.cupboard.QueryResultIterable;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         //init views
         etBunnyName = (EditText) findViewById(R.id.edit_text);
-        btnAdd = (Button) findViewById(R.id.button2);
+        btnAdd = (Button) findViewById(R.id.add_bunny);
         lvBunnies = (ListView) findViewById(R.id.listView);
 
         lvBunnies.setOnTouchListener(swipey); // Make sure we set a touch listener
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 
-                String txt1 = "This bunny is named: "+bunnyArray.get(position).getName();        // Moving concat to single lines
+                String txt1 = getResources().getString(R.string.bunny_display_text_part)+bunnyArray.get(position).getName();        // Moving concat to single lines
                 String txt2 = "It is a "+bunnyArray.get(position).getCutenessTypeEnum()+" bunny";// JTP 12/22/2015 11:42 am
                 text1.setText(txt1);
                 text2.setText(txt2);
@@ -179,6 +185,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // Create the menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    // Create the actions once the menu has been selected
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id){
+            case R.id.kill_bunnies:
+                cupboard().withDatabase(db).delete(Bunny.class,"_id != NULL");
+                bunnyArray.clear();
+                bunnyNameArray.clear();
+                bunnyAdapter.notifyDataSetChanged();
+                break;
+            default:
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
      /* Private Methods */
 
