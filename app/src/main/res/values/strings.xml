@@ -6,4 +6,6 @@
     <string name="default_bunny_name">Bob</string>
     <string name="bunny_db_name">BunnyRangler.db</string>
     <string name="test_bunny_name">Satan</string>
+    <string name="bunny_display_text_part">This bunny is named: </string>
+    <string name="kill_bunnies">Kill Bunnies</string>
 </resources>

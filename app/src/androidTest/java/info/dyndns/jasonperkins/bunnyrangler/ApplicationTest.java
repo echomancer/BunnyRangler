@@ -1,11 +1,16 @@
 package info.dyndns.jasonperkins.bunnyrangler;
 
 import android.app.Application;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ApplicationTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
+import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +19,9 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -55,11 +62,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @LargeTest
 public class ApplicationTest {
 
-    public static final String STRING_TO_BE_TYPED = "Espresso";
+
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
+
+    public static final String STRING_TO_BE_TYPED = "Espresso";
 
     @Test
     public void changeText_sameActivity() {
@@ -77,62 +86,87 @@ public class ApplicationTest {
 // Old version
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class ApplicationTest {
-/*
 public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivity> {
     public ApplicationTest() {
         super(MainActivity.class);
     }
-*/
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
 
-    String newBunny = String.valueOf(R.string.test_bunny_name);
+    String newBunny = "billy";
     String logTag = "appTest";
+    MainActivity mActivity;
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+
+        // Injecting the Instrumentation instance is required
+        // for your test to run with AndroidJUnitRunner.
+        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
+        startActivity();
+    }
+
+    private void startActivity() {
+        Intent intent = new Intent();
+        setActivityIntent(intent);
+        mActivity = getActivity();
+    }
 
     @Test
     public void canAddBunnyTest(){
+        addBunny(newBunny);         // Add a bunny
 
-        Log.i(logTag, "Add Bunny Test");
-        addBunny(newBunny);
+        // Make sure he's visible
+        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part) + newBunny))
+                .check(matches(isDisplayed()));
 
-        onView(withId(R.id.listView))
-                .check(matches(withText(newBunny)));
-
-        removeBunny(newBunny);
+        removeBunny(newBunny);      // Remove the bunny
     }
 
     @Test
     public void canRemoveBunnyTest(){
 
-        Log.i(logTag, "Simple Remove Bunny Test");
-        addBunny(newBunny);
+
+        addBunny(newBunny);     // Add and remove bunny
         removeBunny(newBunny);
 
-        onView(withId(R.id.listView))
-                .check(matches(withText(not(containsString(newBunny)))));
+        // Make sure he's not there
+        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part) + newBunny))
+                .check(doesNotExist());
     }
 
     @Test
     public void canRemoveCorrectBunnyTest(){
 
-        Log.i(logTag, "Add 2 Bunnies Remove 1 Test");
         String otherBunny = "dog";
         addBunny(otherBunny);
         addBunny(newBunny);
         removeBunny(newBunny);
 
-        onView(withId(R.id.listView))
-                .check(matches(withText(not(containsString(newBunny)))));
+        // Make sure he's visible
+        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part) + otherBunny))
+                .check(matches(isDisplayed()));
+
+        // Make sure he's not there
+        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part) + newBunny))
+                .check(doesNotExist());
 
         removeBunny(otherBunny);
+    }
+
+
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
     }
 
     // Function to add a bunny via espresso
     public void addBunny(String bun){
         onView(withId(R.id.edit_text))      // Find the edit
-                .perform(typeText(bun));    // Type the name
+                .perform(typeText(bun) ,closeSoftKeyboard());    // Type the name
 
         onView(withId(R.id.add_bunny))      // Find the add button
                 .perform(click());          // Add that beautiful bean footage
@@ -140,8 +174,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
 
     // Function to remove a bunny via espresso
     public void removeBunny(String bun){
-        onData(hasToString(endsWith(bun)))
-                .inAdapterView(withId(R.id.listView))
-                .perform(click());
+        onView(withText(mActivity.getResources().getString(R.string.bunny_display_text_part)+ bun))
+                .perform(longClick());
     }
 }

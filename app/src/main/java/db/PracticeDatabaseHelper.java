@@ -1,9 +1,11 @@
-package info.dyndns.jasonperkins.bunnyrangler;
+package db;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import models.Bunny;
+import info.dyndns.jasonperkins.bunnyrangler.R;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 

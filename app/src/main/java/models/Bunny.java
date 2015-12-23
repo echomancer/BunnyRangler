@@ -1,4 +1,6 @@
-package info.dyndns.jasonperkins.bunnyrangler;
+package models;
+
+import info.dyndns.jasonperkins.bunnyrangler.R;
 
 /**
  * Created by Jason on 12/22/2015.
