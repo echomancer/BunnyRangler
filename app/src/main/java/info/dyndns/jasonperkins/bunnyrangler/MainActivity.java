@@ -196,13 +196,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        AlertDialog dial;
 
         switch(id){
             case R.id.kill_bunnies:
-                cupboard().withDatabase(db).delete(Bunny.class,"name != ''");
-                bunnyArray.clear();
-                bunnyNameArray.clear();
-                bunnyAdapter.notifyDataSetChanged();
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.kill_bunnies))
+                        .setMessage(getResources().getString(R.string.kill_bunny_message))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                killAllBunnies();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
                 break;
             default:
                 break;
@@ -213,6 +226,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
      /* Private Methods */
+
+    private void killAllBunnies(){
+        cupboard().withDatabase(db).delete(Bunny.class,"name != ''");
+        bunnyArray.clear();
+        bunnyNameArray.clear();
+        bunnyAdapter.notifyDataSetChanged();
+    }
 
     private static List<Bunny> getListFromQueryResultIterator(QueryResultIterable<Bunny> iter) {
 

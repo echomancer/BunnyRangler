@@ -8,4 +8,7 @@
     <string name="test_bunny_name">Satan</string>
     <string name="bunny_display_text_part">This bunny is named: </string>
     <string name="kill_bunnies">Kill Bunnies</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="kill_bunny_message">Are you sure you want to kill all these cute bunnies?</string>
 </resources>
